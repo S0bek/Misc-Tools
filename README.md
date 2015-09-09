@@ -1,5 +1,11 @@
 # Misc-Tools
 
+# swipedns.sh
+
+Le script swipedns.sh permet juste de définir 2 variables DNS1 et DNS2 dans son shell via:
+'export DNS1=IP DNS2=IP' afin de prendre en compte les 2 IP à rajouter illico-presto dans le fichier DNS (Ubuntu/Debian et dérivés).
+
+# ReverseShell.pl
 1) Modifier la valeur des variables suivantes:                                                                                    
   - $publicip --> contient l'ip publique de l'attaquant, à savoir celle du serveur rebond.
   - $fakeprocess --> n'importe quel processus identifié sur la cible afin de camoufler le shellcode.
